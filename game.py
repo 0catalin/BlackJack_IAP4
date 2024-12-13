@@ -1,8 +1,10 @@
 import pygame, sys
 from button import Button
 from gameplay import Gameplay
-pygame.init()
+from cryptography.fernet import Fernet
 
+pygame.init()
+clock = pygame.time.Clock()
 
 SCREEN_HEIGHT = 720
 SCREEN_WIDTH = 1280
@@ -18,6 +20,17 @@ def get_font(size):
     return pygame.font.Font("assets/font.ttf", size)
 
 def main():
+
+
+
+    screen_info = pygame.display.Info()
+    max_width = screen_info.current_w
+    max_height = screen_info.current_h
+
+    BG_SCALED = pygame.transform.scale(BG, (max_width, max_height))
+    play_button_image = pygame.image.load("assets/Play Rect.png")
+    quit_button_image = pygame.image.load("assets/Quit Rect.png")
+    statistics_button_image = pygame.transform.scale(second_image, (int(max_width * 0.64), second_image.get_height()))
     while True:
 
         screen_info = pygame.display.Info()
@@ -61,8 +74,10 @@ def main():
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
+                
 
         pygame.display.update()
+        clock.tick(60)
 
 
 
@@ -77,6 +92,8 @@ def play():
     input_text2 = ""
     error_message_1 = ""  # more than 100 decks! / input not a number!
     error_message_2 = ""  # initial balance too big! / low! / input not a number!
+    inputbox1_status = False
+    inputbox2_status = False
 
     while True:
         screen_info = pygame.display.Info()
@@ -95,8 +112,12 @@ def play():
 
 
         PLAY_TEXT = get_font(int(current_width / 25)).render("CHOOSE GAME SETTINGS", True, "#FB773C")
-        PLAY_RECT = PLAY_TEXT.get_rect(center=(current_width / 2, current_height * 0.14))
+        PLAY_RECT = PLAY_TEXT.get_rect(center=(current_width / 2, current_height * 0.13))
+        SCREEN.blit(PLAY_TEXT, PLAY_RECT)
 
+        PLAY_TEXT = get_font(int(current_width / 60)).render("Press ENTER when you are ready", True, (0, 0, 0))
+        PLAY_RECT = PLAY_TEXT.get_rect(center=(current_width / 2, current_height * 0.65))
+        SCREEN.blit(PLAY_TEXT, PLAY_RECT)
 
         text_surface = get_font(int(current_width / 60)).render("Number of decks of cards:", True, (255, 255, 255))
         text_position = (5, current_height * 0.35)
@@ -120,23 +141,27 @@ def play():
         input_box2 = pygame.Rect(current_width * 0.43, current_height * 0.47, current_width * 0.4, current_height * 0.07)
         
 
-        pygame.draw.rect(SCREEN, (255, 0, 0) if error_message_1 else (0, 0, 0), input_box1, 2)
-        pygame.draw.rect(SCREEN, (255, 0, 0) if error_message_2 else (0, 0, 0), input_box2, 2)
+        pygame.draw.rect(SCREEN, 
+                 (255, 255, 255) if inputbox1_status else (255, 0, 0) if error_message_1 else (0, 0, 0), 
+                 input_box1,
+                 5)
+        pygame.draw.rect(SCREEN, 
+                 (255, 255, 255) if inputbox2_status else (255, 0, 0) if error_message_2 else (0, 0, 0), 
+                 input_box2,
+                 5)
 
 
         input_text_surface = get_font(int(current_width / 60)).render(input_text1, True, (0, 0, 0))
-        SCREEN.blit(input_text_surface, (input_box1.x + 5, input_box1.y + 5))
+        SCREEN.blit(input_text_surface, (input_box1.x + 5, input_box1.y + 15))
         
         input_text_surface = get_font(int(current_width / 60)).render(input_text2, True, (0, 0, 0))
-        SCREEN.blit(input_text_surface, (input_box2.x + 5, input_box2.y + 5))
+        SCREEN.blit(input_text_surface, (input_box2.x + 5, input_box2.y + 15))
 
 
         BACK_BUTTON = Button(image=pygame.transform.scale(second_image, (int(current_width * 0.1), int(current_height * 0.05))),
                              pos=(75, 25), text_input="BACK", font=get_font(int(current_width / 60)),
                              base_color=(0, 0, 0), hovering_color=(25, 51, 0))
 
-
-        SCREEN.blit(PLAY_TEXT, PLAY_RECT)
 
 
         for button in [BACK_BUTTON]:
@@ -148,7 +173,7 @@ def play():
                 pygame.quit()
                 sys.exit()
 
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 (good_input1, error_message_1) = custom_validation1(input_text1)
                 (good_input2, error_message_2) = custom_validation2(input_text2)
                 if good_input1 and good_input2:
@@ -157,30 +182,42 @@ def play():
                     input_text1 = ""
                 if not good_input2:
                     input_text2 = ""
+                inputbox1_status = False
+                inputbox2_status = False
 
             elif event.type == pygame.KEYDOWN:
-                if input_box1.collidepoint(PLAY_MOUSE_POS):
+                if inputbox1_status:
                     if event.key == pygame.K_BACKSPACE:
                         input_text1 = input_text1[:-1]
                     else:
                         input_text1 += event.unicode
-                elif input_box2.collidepoint(PLAY_MOUSE_POS):
+                elif inputbox2_status:
                     if event.key == pygame.K_BACKSPACE:
                         input_text2 = input_text2[:-1]
                     else:
                         input_text2 += event.unicode
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
+                else:
+                    pass
+            elif event.type == pygame.MOUSEBUTTONDOWN and input_box1.collidepoint(PLAY_MOUSE_POS):
+                inputbox1_status = True
+                inputbox2_status = False
+            elif event.type == pygame.MOUSEBUTTONDOWN and input_box2.collidepoint(PLAY_MOUSE_POS):
+                inputbox1_status = False
+                inputbox2_status = True
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 if BACK_BUTTON.checkForInput(PLAY_MOUSE_POS):
                     main()
+            
 
         pygame.display.update()
+        clock.tick(60)
 
 ## Esc, ALT + F4, maybe F11 for fullscreen
 
 def statistics():
-    i = 0
-
+    encryptMessageAndInsertIntoFile("1,3,4,5,55,6,,6,6,7,,7,7,8,8,8,8,")
+    print(decryptMessageAndReturnIt())
+    
 def gameplay(deck_number, initial_balance):
     gameplay = Gameplay(SCREEN, BG, deck_number, initial_balance)
     gameplay.loop()
@@ -207,6 +244,49 @@ def custom_validation2(input2):
         return False, "initial balance too low!"
     return True, ""
     
+def takeInputFromFile():
+    with open('input.txt', 'r') as file:
+        line = file.readline()
+    
+    
+    values = line.split(',')
+    
+    print(values)
+
+
+def generate_key():
+    key = Fernet.generate_key()
+    with open("secret.key", "wb") as key_file:
+        key_file.write(key)
+
+
+def load_key():
+    return open("secret.key", "rb").read()
+
+
+def encrypt_message(message):
+    key = load_key()
+    f = Fernet(key)
+    encrypted_message = f.encrypt(message.encode())
+    return encrypted_message
+
+
+def decrypt_message(encrypted_message):
+    key = load_key()
+    f = Fernet(key)
+    decrypted_message = f.decrypt(encrypted_message)
+    return decrypted_message.decode()
+
+# use this when you are done with a message and you want to put it in the file
+def encryptMessageAndInsertIntoFile(msg):
+    with open('database.txt', 'wb') as file:
+        file.write(encrypt_message(msg))
+
+# use this when you want to retrieve the message from the file
+def decryptMessageAndReturnIt():
+    with open('database.txt', 'rb') as file:
+        return decrypt_message(file.read())
+
 
 if __name__ == "__main__":
     main()

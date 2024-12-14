@@ -12,7 +12,7 @@ clock = pygame.time.Clock()
 button_click_sound = pygame.mixer.Sound("sounds/button.mp3")
 quit_sound = pygame.mixer.Sound("sounds/quit_game.mp3")
 rect_sound = pygame.mixer.Sound("sounds/click.mp3")
-
+wrong_input_sound = pygame.mixer.Sound("sounds/wrong_input.mp3")
 
 SCREEN_HEIGHT = 720
 SCREEN_WIDTH = 1280
@@ -213,6 +213,7 @@ def play():
                     input_text1 = ""
                 if not good_input2:
                     input_text2 = ""
+                wrong_input_sound.play()
                 inputbox1_status = False
                 inputbox2_status = False
 

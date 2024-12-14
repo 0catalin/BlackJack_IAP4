@@ -358,8 +358,10 @@ def custom_validation2(input2):
         return False, "input must be a number!"
     if input2 > 1000000:
         return False, "initial balance too big!"
-    if input2 < 100:
+    if input2 < 1000:
         return False, "initial balance too low!"
+    if input2 % 1000 != 0:
+        return False, "balance must be multiple of 1000!"
     return True, ""
     
 

@@ -26,7 +26,8 @@ def get_font(size):
     return pygame.font.Font("assets/font.ttf", size)
 
 def main():
-    os.chmod("secret.key", stat.S_IREAD)
+    os.chmod("secret.key", stat.S_IREAD) # prevents it from getting written, the key is unique
+
 
 
     screen_info = pygame.display.Info()
@@ -238,8 +239,34 @@ def statistics():
         
         SCREEN.blit(resized_image, (x, y))
 
+        input_box = pygame.Rect(current_width * 0.3, current_height * 0.13, current_width * 0.4, current_height * 0.08)
+        pygame.draw.rect(SCREEN, (0, 0, 0), input_box, 0)
+
+        
         STATISTICS_TEXT = get_font(int(current_width / 25)).render("STATISTICS", True, "#FB773C")
         STATISTICS_RECT = STATISTICS_TEXT.get_rect(center=(current_width / 2, current_height * 0.17))
+        SCREEN.blit(STATISTICS_TEXT, STATISTICS_RECT)
+
+
+
+        STATISTICS_TEXT = get_font(int(current_width / 60)).render("Total Games Played:" + " " * 5 + str(statistics.total_games), True, (255, 255, 255))
+        STATISTICS_RECT = STATISTICS_TEXT.get_rect(center=(current_width / 3, current_height * 0.35))
+        SCREEN.blit(STATISTICS_TEXT, STATISTICS_RECT)
+
+        STATISTICS_TEXT = get_font(int(current_width / 60)).render("Total Wins:" + " " * 5 + str(statistics.total_wins), True, (255, 255, 255))
+        STATISTICS_RECT = STATISTICS_TEXT.get_rect(center=(current_width / 3, current_height * 0.45))
+        SCREEN.blit(STATISTICS_TEXT, STATISTICS_RECT)
+
+        STATISTICS_TEXT = get_font(int(current_width / 60)).render("Total Losses:" + " " * 5 + str(statistics.total_losses), True, (255, 255, 255))
+        STATISTICS_RECT = STATISTICS_TEXT.get_rect(center=(current_width / 3, current_height * 0.55))
+        SCREEN.blit(STATISTICS_TEXT, STATISTICS_RECT)
+
+        STATISTICS_TEXT = get_font(int(current_width / 60)).render("Total Blackjacks:" + " " * 5 + str(statistics.total_blackjacks), True, (255, 255, 255))
+        STATISTICS_RECT = STATISTICS_TEXT.get_rect(center=(current_width / 3, current_height * 0.65))
+        SCREEN.blit(STATISTICS_TEXT, STATISTICS_RECT)
+
+        STATISTICS_TEXT = get_font(int(current_width / 60)).render("Total Profit:" + " " * 5 + str(statistics.profit) , True, (255, 255, 255))
+        STATISTICS_RECT = STATISTICS_TEXT.get_rect(center=(current_width / 3, current_height * 0.75))
         SCREEN.blit(STATISTICS_TEXT, STATISTICS_RECT)
 
 

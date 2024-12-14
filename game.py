@@ -4,13 +4,18 @@ from gameplay import Gameplay
 from cryptography.fernet import Fernet
 import os, stat
 from statistics import Statistics
+import time
 
 pygame.init()
+pygame.mixer.init()
 clock = pygame.time.Clock()
+button_click_sound = pygame.mixer.Sound("sounds/button.mp3")
+quit_sound = pygame.mixer.Sound("sounds/quit_game.mp3")
+pygame.mixer.music.load("sounds/background.mp3")
 
 SCREEN_HEIGHT = 720
 SCREEN_WIDTH = 1280
-SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)  # Make window resizable
+SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 pygame.display.set_caption("BlackJack for everyone")
 
 
@@ -27,7 +32,9 @@ def get_font(size):
 
 def main():
     os.chmod("secret.key", stat.S_IREAD) # prevents it from getting written, the key is unique
-
+    button_click_sound.play()
+    time.sleep(0.3)
+    button_click_sound.stop()
 
 
     screen_info = pygame.display.Info()
@@ -71,16 +78,25 @@ def main():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                quit_sound.play()
+                time.sleep(0.7)
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     play()
                 if STATISTICS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     statistics()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    quit_sound.play()
+                    time.sleep(0.7)
                     pygame.quit()
                     sys.exit()
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                quit_sound.play()
+                time.sleep(0.7)
+                pygame.quit()
+                sys.exit()
                 
 
         pygame.display.update()
@@ -94,6 +110,9 @@ def main():
 
 def play():
     good_input = True
+    button_click_sound.play()
+    time.sleep(0.3)
+    button_click_sound.stop()
 
     input_text1 = ""  # This will store the user input
     input_text2 = ""
@@ -177,6 +196,8 @@ def play():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                quit_sound.play()
+                time.sleep(0.7)
                 pygame.quit()
                 sys.exit()
 
@@ -192,7 +213,7 @@ def play():
                 inputbox1_status = False
                 inputbox2_status = False
 
-            elif event.type == pygame.KEYDOWN:
+            elif event.type == pygame.KEYDOWN and event.key != pygame.K_ESCAPE:
                 if inputbox1_status:
                     if event.key == pygame.K_BACKSPACE:
                         input_text1 = input_text1[:-1]
@@ -205,6 +226,8 @@ def play():
                         input_text2 += event.unicode
                 else:
                     pass
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                main()
             elif event.type == pygame.MOUSEBUTTONDOWN and input_box1.collidepoint(PLAY_MOUSE_POS):
                 inputbox1_status = True
                 inputbox2_status = False
@@ -219,9 +242,12 @@ def play():
         pygame.display.update()
         clock.tick(60)
 
-## Esc, ALT + F4, maybe F11 for fullscreen
 
 def statistics():
+    button_click_sound.play()
+    time.sleep(0.3)
+    button_click_sound.stop()
+
     statistics = Statistics()
     while True:
         screen_info = pygame.display.Info()
@@ -284,31 +310,24 @@ def statistics():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                quit_sound.play()
+                time.sleep(0.7)
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if BACK_BUTTON.checkForInput(PLAY_MOUSE_POS):
                     main()
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                main()
 
         pygame.display.update()
         clock.tick(60)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def gameplay(deck_number, initial_balance):
+    button_click_sound.play()
+    time.sleep(0.3)
+    button_click_sound.stop()
     gameplay = Gameplay(SCREEN, table_bg, deck_number, initial_balance)
     gameplay.loop()
 
@@ -334,49 +353,7 @@ def custom_validation2(input2):
         return False, "initial balance too low!"
     return True, ""
     
-def takeInputFromFile():
-    with open('input.txt', 'r') as file:
-        line = file.readline()
-    
-    
-    values = line.split(',')
-    
-    print(values)
-
-
-def generate_key():
-    key = Fernet.generate_key()
-    with open("secret.key", "wb") as key_file:
-        key_file.write(key)
-
-
-def load_key():
-    return open("secret.key", "rb").read()
-
-
-def encrypt_message(message):
-    key = load_key()
-    f = Fernet(key)
-    encrypted_message = f.encrypt(message.encode())
-    return encrypted_message
-
-
-def decrypt_message(encrypted_message):
-    key = load_key()
-    f = Fernet(key)
-    decrypted_message = f.decrypt(encrypted_message)
-    return decrypted_message.decode()
-
-# use this when you are done with a message and you want to put it in the file
-def encryptMessageAndInsertIntoFile(msg):
-    with open('database.txt', 'wb') as file:
-        file.write(encrypt_message(msg))
-
-# use this when you want to retrieve the message from the file
-def decryptMessageAndReturnIt():
-    with open('database.txt', 'rb') as file:
-        return decrypt_message(file.read())
-
 
 if __name__ == "__main__":
+    pygame.mixer.music.play(loops=-1)
     main()

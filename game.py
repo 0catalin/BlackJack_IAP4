@@ -11,7 +11,8 @@ pygame.mixer.init()
 clock = pygame.time.Clock()
 button_click_sound = pygame.mixer.Sound("sounds/button.mp3")
 quit_sound = pygame.mixer.Sound("sounds/quit_game.mp3")
-pygame.mixer.music.load("sounds/background.mp3")
+rect_sound = pygame.mixer.Sound("sounds/click.mp3")
+
 
 SCREEN_HEIGHT = 720
 SCREEN_WIDTH = 1280
@@ -31,6 +32,8 @@ def get_font(size):
     return pygame.font.Font("assets/font.ttf", size)
 
 def main():
+    pygame.mixer.music.load("sounds/background.mp3")
+    pygame.mixer.music.play(loops=-1)
     os.chmod("secret.key", stat.S_IREAD) # prevents it from getting written, the key is unique
     button_click_sound.play()
     time.sleep(0.3)
@@ -229,9 +232,11 @@ def play():
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 main()
             elif event.type == pygame.MOUSEBUTTONDOWN and input_box1.collidepoint(PLAY_MOUSE_POS):
+                rect_sound.play()
                 inputbox1_status = True
                 inputbox2_status = False
             elif event.type == pygame.MOUSEBUTTONDOWN and input_box2.collidepoint(PLAY_MOUSE_POS):
+                rect_sound.play()
                 inputbox1_status = False
                 inputbox2_status = True
             elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -359,5 +364,4 @@ def custom_validation2(input2):
     
 
 if __name__ == "__main__":
-    pygame.mixer.music.play(loops=-1)
     main()

@@ -1,4 +1,5 @@
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
+
 
 class Statistics():
     def __init__(self):
@@ -9,23 +10,9 @@ class Statistics():
             self.total_losses = int(statistics[2])
             self.total_blackjacks = int(statistics[3])
             self.profit = int(statistics[4])
-        except IndexError:
-            self.total_games = 0
-            self.total_wins = 0
-            self.total_losses = 0
-            self.total_blackjacks = 0
-            self.profit = 0
+        except (ValueError, IndexError):
+            self.reset_statistics()
             self.encryptMessageAndInsertIntoFile()
-        except ValueError:
-            self.total_games = 0
-            self.total_wins = 0
-            self.total_losses = 0
-            self.total_blackjacks = 0
-            self.profit = 0
-            self.encryptMessageAndInsertIntoFile()
-
-
-
 
 
 
@@ -38,6 +25,12 @@ class Statistics():
     def load_key(self):
         return open("secret.key", "rb").read()
 
+    def reset_statistics(self):
+        self.total_games = 0
+        self.total_wins = 0
+        self.total_losses = 0
+        self.total_blackjacks = 0
+        self.profit = 0
 
     def encrypt_message(self, message):
         key = self.load_key()
@@ -47,21 +40,36 @@ class Statistics():
 
 
     def decrypt_message(self, encrypted_message):
-        key = self.load_key()
-        f = Fernet(key)
-        decrypted_message = f.decrypt(encrypted_message)
-        return decrypted_message.decode()
+        try:
+            key = self.load_key()
+            f = Fernet(key)
+            decrypted_message = f.decrypt(encrypted_message)
+            return decrypted_message.decode()
+        except InvalidToken:
+            self.reset_statistics()
+            self.encryptMessageAndInsertIntoFile()
+            return ""
+
 
 # use this when you are done with a message and you want to put it in the file
+
+# for Petre : create a Statistics instance for when you want to update statistics, update whatever you have to change from the Statistics instance that you create
+# and use this function before quitting the game for the statistics to save. (preferably to make a try except block where if the user leaves the progress is saved)
     def encryptMessageAndInsertIntoFile(self):
-        msg = "/".join([self.total_games, self.total_wins, self.total_losses, self.total_blackjacks, self.profit])
+        msg = "/".join([str(self.total_games), str(self.total_wins), str(self.total_losses), str(self.total_blackjacks), str(self.profit)])
         with open('database.txt', 'wb') as file:
             file.write(self.encrypt_message(msg))
 
 # use this when you want to retrieve the message from the file
     def decryptMessageAndReturnIt(self):
-        with open('database.txt', 'rb') as file:
-            return self.decrypt_message(file.read())
+        try:
+            with open('database.txt', 'rb') as file:
+                encrypted_data = file.read()
+            return self.decrypt_message(encrypted_data)
+        except FileNotFoundError:
+            self.reset_statistics()
+            self.encryptMessageAndInsertIntoFile()
+            return ""
 
     
     

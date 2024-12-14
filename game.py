@@ -16,6 +16,10 @@ pygame.display.set_caption("BlackJack for everyone")
 
 BG = pygame.image.load("assets/main_menu_background.jpg")
 BG = pygame.transform.scale(BG, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
+table_bg = pygame.image.load("assets/table_bg.jpg")
+table_bg = pygame.transform.scale(table_bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
 second_image = pygame.image.load("assets/Options Rect.png")
 
 def get_font(size):
@@ -305,7 +309,7 @@ def statistics():
 
 
 def gameplay(deck_number, initial_balance):
-    gameplay = Gameplay(SCREEN, BG, deck_number, initial_balance)
+    gameplay = Gameplay(SCREEN, table_bg, deck_number, initial_balance)
     gameplay.loop()
 
 def custom_validation1(input1):

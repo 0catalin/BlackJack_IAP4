@@ -32,7 +32,7 @@ def get_font(size):
     return pygame.font.Font("assets/font.ttf", size)
 
 def main():
-    pygame.mixer.music.load("sounds/background.mp3")
+    pygame.mixer.music.load("sounds/background2.mp3")
     pygame.mixer.music.play(loops=-1)
     os.chmod("secret.key", stat.S_IREAD) # prevents it from getting written, the key is unique
     button_click_sound.play()

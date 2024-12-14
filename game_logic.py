@@ -1,4 +1,7 @@
-import random, pygame, sys
+import random, pygame, sys, time
+
+pygame.mixer.init()
+place_card_sound = pygame.mixer.Sound("sounds/flip_card.mp3")
 
 class Card:
     def __init__(self, suit, rank, value):
@@ -46,6 +49,8 @@ class Hand:
         self.bet = 0
 
     def add_card(self, card):
+        place_card_sound.play()
+        time.sleep(0.2)
         self.cards.append(card)
         self.value += card.value
         if card.rank == 'ace':

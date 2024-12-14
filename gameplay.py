@@ -6,8 +6,11 @@ from utils import get_font, draw_balance_box, place_chip, crt_h, crt_w
 SCREEN_HEIGHT = 720
 SCREEN_WIDTH = 1280
 
-
+pygame.mixer.init()
+quit_sound = pygame.mixer.Sound("sounds/quit_game.mp3")
+button_click_sound = pygame.mixer.Sound("sounds/button.mp3")
 default_rect = pygame.image.load("assets/Options Rect.png")
+
 
 class Gameplay():
     def __init__(self, screen, background, deck_number, initial_balance):
@@ -82,15 +85,15 @@ class Gameplay():
             FOURTH_BET = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.15), int(current_height * 0.05))),
                          pos=(crt_w() / 8.5, crt_h() / 2.4 + int(current_width * 0.135)), text_input = "ALL IN", font=get_font(int(current_width / 60)),
                          base_color = (255, 215, 0), hovering_color = (255, 140, 0))
-            EXIT_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.1), int(current_height * 0.05))),
-                             pos=(75, 25), text_input="EXIT", font=get_font(int(current_width / 60)),
+            BACK_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.1), int(current_height * 0.05))),
+                             pos=(75, 25), text_input="BACK", font=get_font(int(current_width / 60)),
                              base_color=(0, 0, 0), hovering_color=(25, 51, 0))
 
             BET_ERROR = get_font(int(current_width / 80)).render(error, True, (255, 0, 0))
             self.screen.blit(BET_ERROR, (crt_w() / 128, crt_h() / 2.4 + crt_w() * 0.16))
 
             MOUSE_POS = pygame.mouse.get_pos()
-            for button in [FIRST_BET, SECOND_BET, THIRD_BET, FOURTH_BET, EXIT_BUTTON]:
+            for button in [FIRST_BET, SECOND_BET, THIRD_BET, FOURTH_BET, BACK_BUTTON]:
                 button.changeColor(MOUSE_POS)
                 button.update(self.screen)
 
@@ -99,6 +102,9 @@ class Gameplay():
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if FIRST_BET.checkForInput(MOUSE_POS):
+                        button_click_sound.play()
+                        time.sleep(0.3)
+                        button_click_sound.stop()
                         if self.player.sum < self.initial_balance / 10:
                             error = "Not enough funds!"
                             continue
@@ -106,6 +112,9 @@ class Gameplay():
                         self.player.sum -= self.player.bet
                         return
                     elif SECOND_BET.checkForInput(MOUSE_POS):
+                        button_click_sound.play()
+                        time.sleep(0.3)
+                        button_click_sound.stop()
                         if self.player.sum < self.initial_balance / 100:
                             error = "Not enough funds!"
                             continue
@@ -113,6 +122,9 @@ class Gameplay():
                         self.player.sum -= self.player.bet
                         return
                     elif THIRD_BET.checkForInput(MOUSE_POS):
+                        button_click_sound.play()
+                        time.sleep(0.3)
+                        button_click_sound.stop()
                         if self.player.sum < self.initial_balance / 1000:
                             error = "Not enough funds!"
                             continue
@@ -120,19 +132,24 @@ class Gameplay():
                         self.player.sum -= self.player.bet
                         return
                     elif FOURTH_BET.checkForInput(MOUSE_POS):
+                        button_click_sound.play()
+                        time.sleep(0.3)
+                        button_click_sound.stop()
                         if self.player.sum == 0:
                             error = "Not enough funds!"
                             continue
                         self.player.bet = self.player.sum
                         self.player.sum = 0
                         return
-                    elif EXIT_BUTTON.checkForInput(MOUSE_POS):
+                    elif BACK_BUTTON.checkForInput(MOUSE_POS):
                         from game import main
                         main()
-                elif event.type == pygame.QUIT:
+                elif event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                    quit_sound.play()
                     time.sleep(0.7)
                     pygame.quit()
                     sys.exit()
+
             
 
     def loop(self):
@@ -162,8 +179,8 @@ class Gameplay():
 
             draw_balance_box(self.screen, self.player.sum, current_width)
             place_chip(self.screen, self.player.bet, current_width, current_height)
-            EXIT_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.1), int(current_height * 0.05))),
-                             pos=(75, 25), text_input="EXIT", font=get_font(int(current_width / 60)),
+            BACK_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.1), int(current_height * 0.05))),
+                             pos=(75, 25), text_input="BACK", font=get_font(int(current_width / 60)),
                              base_color=(0, 0, 0), hovering_color=(25, 51, 0))
 
             HIT_BUTTON = Button(image=pygame.transform.scale(default_rect, (crt_w() / 8.5, crt_h() / 7.5)),
@@ -183,22 +200,30 @@ class Gameplay():
             
             MOUSE_POS = pygame.mouse.get_pos()
 
-            for button in [HIT_BUTTON, STAND_BUTTON, EXIT_BUTTON, DOUBLE_BUTTON]:
+            for button in [HIT_BUTTON, STAND_BUTTON, BACK_BUTTON, DOUBLE_BUTTON]:
                 button.changeColor(MOUSE_POS)
                 button.update(self.screen)
             
             pygame.display.flip()
-
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if EXIT_BUTTON.checkForInput(MOUSE_POS):
+                    if BACK_BUTTON.checkForInput(MOUSE_POS):
                         from game import main
                         main()
                     elif HIT_BUTTON.checkForInput(MOUSE_POS):
+                        button_click_sound.play()
+                        time.sleep(0.3)
+                        button_click_sound.stop()
                         player.add_card(self.deck.deal())
                     elif STAND_BUTTON.checkForInput(MOUSE_POS):
+                        button_click_sound.play()
+                        time.sleep(0.3)
+                        button_click_sound.stop()
                         self.dealer_turn()
                     elif DOUBLE_BUTTON.checkForInput(MOUSE_POS):
+                        button_click_sound.play()
+                        time.sleep(0.3)
+                        button_click_sound.stop()
                         if player.sum < player.bet:
                             double_error = "Cannot double!"
                             continue
@@ -207,7 +232,8 @@ class Gameplay():
                         player.bet *= 2
                         self.check_score()
                         self.dealer_turn()
-                elif event.type == pygame.QUIT:
+                elif event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                    quit_sound.play()
                     time.sleep(0.7)
                     pygame.quit()
                     sys.exit()
@@ -262,12 +288,12 @@ class Gameplay():
             NEXT_ROUND_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.2), int(current_height * 0.1))),
                              pos=(crt_w() / 2, crt_h() / 2), text_input="NEXT_ROUND", font=get_font(int(current_width / 60)),
                              base_color=(255, 215, 0), hovering_color=(255, 140, 0))
-            QUIT_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.2), int(current_height * 0.1))),
-                             pos=(crt_w() / 2, crt_h() / 1.6), text_input="QUIT", font=get_font(int(current_width / 60)),
+            EXIT_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.2), int(current_height * 0.1))),
+                             pos=(crt_w() / 2, crt_h() / 1.6), text_input="EXIT", font=get_font(int(current_width / 60)),
                              base_color=(255, 215, 0), hovering_color=(255, 140, 0))
 
             MOUSE_POS = pygame.mouse.get_pos()
-            for button in [NEXT_ROUND_BUTTON, QUIT_BUTTON]:
+            for button in [NEXT_ROUND_BUTTON, EXIT_BUTTON]:
                 button.changeColor(MOUSE_POS)
                 button.update(self.screen)
 
@@ -275,6 +301,9 @@ class Gameplay():
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if NEXT_ROUND_BUTTON.checkForInput(MOUSE_POS):
+                        button_click_sound.play()
+                        time.sleep(0.3)
+                        button_click_sound.stop()
                         match text:
                             case "BLACKJACK!":
                                 self.player.sum += 2.5 * self.player.bet
@@ -283,10 +312,11 @@ class Gameplay():
                             case "PLAYER WON!":
                                 self.player.sum += 2 * self.player.bet
                         self.loop()
-                    elif QUIT_BUTTON.checkForInput(MOUSE_POS):
-                        pygame.quit()
-                        sys.exit()
-                elif event.type == pygame.QUIT:
+                    elif EXIT_BUTTON.checkForInput(MOUSE_POS):
+                        from game import main
+                        main()
+                elif event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                    quit_sound.play()
                     time.sleep(0.7)
                     pygame.quit()
                     sys.exit()

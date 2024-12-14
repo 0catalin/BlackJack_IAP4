@@ -1,7 +1,7 @@
 import pygame, sys, time
 from button import Button
 from game_logic import Card, Deck, Hand
-from utils import get_font
+from utils import get_font, draw_balance_box
 
 SCREEN_HEIGHT = 720
 SCREEN_WIDTH = 1280
@@ -22,16 +22,19 @@ class Gameplay():
         self.player = Hand(self.initial_balance)
         self.dealer = Hand(0)
 
+    # Shows the given card face up.
     def show_card(self, card, position):
         card_image = card.load_card_image()
         card_image = pygame.transform.scale(card_image, (125, 181))
         self.screen.blit(card_image, position)
 
+    # Shows a face down card.
     def show_hidden_card(self, position):
         hidden_image = pygame.image.load("assets/card_assets/back_of_card.png")
         hidden_image = pygame.transform.scale(hidden_image, (125, 181))
         self.screen.blit(hidden_image, position)
 
+    # Shows hand normally.
     def show_hand(self, hand, start_x, start_y):
         x = start_x
         y = start_y
@@ -39,6 +42,7 @@ class Gameplay():
             self.show_card(card, (x, y))
             x = x + 50
 
+    # Shows hand with one card face down.
     def show_dealer_hand(self, hand, start_x, start_y):
         x = start_x
         y = start_y
@@ -49,21 +53,23 @@ class Gameplay():
         if self.player.value > 21:
             self.game_end("BUST!")
         elif self.player.value == 21:
-            self.game_end("BLACKJACK!")
+            self.dealer_turn()
 
     def loop(self):
         print("time to work")
-        deck = self.deck
         player = self.player
         dealer = self.dealer
         player.clear_hand()
         dealer.clear_hand()
-        player.add_card(deck.deal())
-        player.add_card(deck.deal())
-        dealer.add_card(deck.deal())
-        dealer.add_card(deck.deal())
+        player.add_card(self.deck.deal())
+        player.add_card(self.deck.deal())
+        dealer.add_card(self.deck.deal())
+        dealer.add_card(self.deck.deal())
 
         while(True):
+            if len(self.deck.cards) < 15:
+                print("running out...")
+                self.deck = Deck(self.deck_number)
             screen_info = pygame.display.Info()
             current_width = screen_info.current_w
             current_height = screen_info.current_h
@@ -72,6 +78,8 @@ class Gameplay():
 
             self.show_hand(player, PLAYER_X, PLAYER_Y)
             self.show_dealer_hand(dealer, DEALER_X, DEALER_Y)
+
+            draw_balance_box(self.screen, self.initial_balance, current_width)
         
             PAUSE_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.1), int(current_height * 0.05))),
                              pos=(75, 25), text_input="RETURN", font=get_font(int(current_width / 60)),
@@ -102,7 +110,7 @@ class Gameplay():
                         from game import main
                         main()
                     elif HIT_BUTTON.checkForInput(MOUSE_POS):
-                        player.add_card(deck.deal())
+                        player.add_card(self.deck.deal())
                     elif STAND_BUTTON.checkForInput(MOUSE_POS):
                         self.dealer_turn()
             self.check_score()
@@ -121,6 +129,8 @@ class Gameplay():
             self.show_hand(self.player, PLAYER_X, PLAYER_Y)
             self.show_hand(self.dealer, DEALER_X, DEALER_Y)
 
+            draw_balance_box(self.screen, self.initial_balance, current_width)
+            
             # Before showing the result, sleep the table once so
             # that the window doesn't appear instantly
             if (break_time):
@@ -145,6 +155,8 @@ class Gameplay():
                     result_position = (450, 225)
                 case "DEALER WON!":
                     result_position = (450, 225)
+                case "DRAW!":
+                    result_position = (550, 225)
 
             self.screen.blit(RESULT_TEXT, result_position)
                 
@@ -172,7 +184,7 @@ class Gameplay():
 
             
     def dealer_turn(self):
-        while(self.dealer.value <= 16):
+        while(self.dealer.value <= 16 and not (self.player.value == 21 and len(self.player.cards) == 2)):
             screen_info = pygame.display.Info()
             current_width = screen_info.current_w
             current_height = screen_info.current_h
@@ -181,14 +193,21 @@ class Gameplay():
             self.show_hand(self.player, PLAYER_X, PLAYER_Y)
             self.show_hand(self.dealer, DEALER_X, DEALER_Y)
             
+            draw_balance_box(self.screen, self.initial_balance, current_width)
+
             MOUSE_POS = pygame.mouse.get_pos()
 
             pygame.display.flip()
             time.sleep(1)
             self.dealer.add_card(self.deck.deal())
-        if (self.dealer.value >= self.player.value and self.dealer.value <= 21):
+        if (self.dealer.value > self.player.value and self.dealer.value <= 21):
             self.game_end("DEALER WON!")
-        else:
-            self.game_end("PLAYER WON!")
+        elif (self.dealer.value < self.player.value or self.dealer.value > 21):
+            if (self.player.value == 21 and len(self.player.cards) == 2):
+                self.game_end("BLACKJACK!")
+            else:
+                self.game_end("PLAYER WON!")
+        elif (self.dealer.value == self.player.value):
+            self.game_end("DRAW!")
         
 

@@ -325,6 +325,10 @@ def statistics():
 
 
 def gameplay(deck_number, initial_balance):
+    pygame.mixer.music.fadeout(2000)
+    pygame.mixer.music.load("sounds/guitar_background.mp3")
+    pygame.mixer.music.play(loops=-1)
+
     button_click_sound.play()
     time.sleep(0.3)
     button_click_sound.stop()

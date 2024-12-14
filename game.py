@@ -2,6 +2,8 @@ import pygame, sys
 from button import Button
 from gameplay import Gameplay
 from cryptography.fernet import Fernet
+import os, stat
+from statistics import Statistics
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -20,7 +22,7 @@ def get_font(size):
     return pygame.font.Font("assets/font.ttf", size)
 
 def main():
-
+    os.chmod("secret.key", stat.S_IREAD)
 
 
     screen_info = pygame.display.Info()
@@ -215,9 +217,66 @@ def play():
 ## Esc, ALT + F4, maybe F11 for fullscreen
 
 def statistics():
-    encryptMessageAndInsertIntoFile("1,3,4,5,55,6,,6,6,7,,7,7,8,8,8,8,")
-    print(decryptMessageAndReturnIt())
-    
+    statistics = Statistics()
+    while True:
+        screen_info = pygame.display.Info()
+        current_width = screen_info.current_w
+        current_height = screen_info.current_h
+        SCREEN.fill("white")
+        SCREEN.blit(pygame.transform.scale(BG, (current_width, current_height)), (0, 0))
+        PLAY_MOUSE_POS = pygame.mouse.get_pos()
+
+
+        resized_image = pygame.transform.scale(second_image, (current_width * 0.8 , current_height * 0.8))
+        image_width, image_height = resized_image.get_size()
+        x = (current_width - image_width) / 2
+        y = (current_height - image_height) / 2
+        
+        SCREEN.blit(resized_image, (x, y))
+
+        STATISTICS_TEXT = get_font(int(current_width / 25)).render("STATISTICS", True, "#FB773C")
+        STATISTICS_RECT = STATISTICS_TEXT.get_rect(center=(current_width / 2, current_height * 0.17))
+        SCREEN.blit(STATISTICS_TEXT, STATISTICS_RECT)
+
+
+        
+
+        BACK_BUTTON = Button(image=pygame.transform.scale(second_image, (int(current_width * 0.1), int(current_height * 0.05))),
+                             pos=(75, 25), text_input="BACK", font=get_font(int(current_width / 60)),
+                             base_color=(0, 0, 0), hovering_color=(25, 51, 0))
+
+
+        for button in [BACK_BUTTON]:
+            button.changeColor(PLAY_MOUSE_POS)
+            button.update(SCREEN)
+
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if BACK_BUTTON.checkForInput(PLAY_MOUSE_POS):
+                    main()
+
+        pygame.display.update()
+        clock.tick(60)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def gameplay(deck_number, initial_balance):
     gameplay = Gameplay(SCREEN, BG, deck_number, initial_balance)
     gameplay.loop()

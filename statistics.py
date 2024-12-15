@@ -55,12 +55,6 @@ class Statistics():
             return ""
 
 
-# use this when you are done with a message and you want to put it in the file
-
-# for Petre : create a Statistics instance for when you want to update statistics, update whatever you have to change from the Statistics instance that you create
-# and use this function before quitting the game for the statistics to save. (preferably to make a try except block where if the user leaves the progress is saved)
-
-
 # joins all data from instance, encrypts it and writes into file
     def encryptMessageAndInsertIntoFile(self):
         msg = "/".join([str(self.total_games), str(self.total_wins), str(self.total_losses), str(self.total_blackjacks), str(self.profit)])

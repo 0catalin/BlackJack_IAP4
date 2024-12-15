@@ -14,6 +14,7 @@ default_rect = pygame.image.load("assets/Options Rect.png")
 chip_drop_sound = pygame.mixer.Sound("sounds/chip.mp3")
 all_in_sound = pygame.mixer.Sound("sounds/all_in.mp3")
 flip_card = pygame.mixer.Sound("sounds/flip_card.mp3")
+shuffle_cards = pygame.mixer.Sound("sounds/shuffle_cards.mp3")
 
 class Gameplay():
     def __init__(self, screen, background, deck_number, initial_balance):
@@ -200,11 +201,13 @@ class Gameplay():
         while(True):
             if len(self.deck.cards) < 15:
                 self.deck = Deck(self.deck_number)
-
+                shuffle_cards.play()
                 EMPTY_TEXT = get_font(int(crt_w() / 70)).render(empty_error, True, (255, 0, 0))
                 self.screen.blit(EMPTY_TEXT, (crt_w() / 1.6, crt_h() / 40))
                 pygame.display.flip()
                 time.sleep(1)
+                shuffle_cards.stop()
+                time.sleep(0.2)
                 
             screen_info = pygame.display.Info()
             current_width = screen_info.current_w

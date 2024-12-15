@@ -10,8 +10,8 @@ pygame.mixer.init()
 quit_sound = pygame.mixer.Sound("sounds/quit_game.mp3")
 button_click_sound = pygame.mixer.Sound("sounds/button.mp3")
 default_rect = pygame.image.load("assets/Options Rect.png")
-
-
+chip_drop_sound = pygame.mixer.Sound("sounds/chip.mp3")
+all_in_sound = pygame.mixer.Sound("sounds/all_in.mp3")
 class Gameplay():
     def __init__(self, screen, background, deck_number, initial_balance):
         self.background = background
@@ -28,11 +28,14 @@ class Gameplay():
         card_image = pygame.transform.scale(card_image, (crt_w() / 10.2, crt_h() / 3.9))
         self.screen.blit(card_image, position)
 
+
+
     # Shows a face down card.
     def show_hidden_card(self, position):
         hidden_image = pygame.image.load("assets/card_assets/back_of_card.png")
         hidden_image = pygame.transform.scale(hidden_image, (crt_w() / 10.2, crt_h() / 3.9))
         self.screen.blit(hidden_image, position)
+
 
     # Shows hand normally.
     def show_hand(self, hand, start_x, start_y):
@@ -158,12 +161,22 @@ class Gameplay():
         dealer = self.dealer
         player.clear_hand()
         dealer.clear_hand()
+
+        screen_info = pygame.display.Info()
+        current_width = screen_info.current_w
+        current_height = screen_info.current_h
+        self.screen.fill((255, 255, 255))
+        self.screen.blit(pygame.transform.scale(self.background, (current_width, current_height)), (0, 0))
+        pygame.display.update() # added those 5 lines to ensure that a background exists after the self.deck.deal sounds are played
+
         player.add_card(self.deck.deal())
         player.add_card(self.deck.deal())
         dealer.add_card(self.deck.deal())
         dealer.add_card(self.deck.deal())
         self.choose_bet()
         double_error = ""
+
+        place_chip_once_sound = True
         while(True):
             if len(self.deck.cards) < 15:
                 print("running out...")
@@ -179,6 +192,15 @@ class Gameplay():
 
             draw_balance_box(self.screen, self.player.sum, current_width)
             place_chip(self.screen, self.player.bet, current_width, current_height)
+
+            # ensures that the sound is only played once and that the right sound is played
+            if place_chip_once_sound and self.player.sum != 0:
+                chip_drop_sound.play()
+                place_chip_once_sound = False
+            elif place_chip_once_sound: 
+                all_in_sound.play()
+                place_chip_once_sound = False
+
             BACK_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.1), int(current_height * 0.05))),
                              pos=(75, 25), text_input="BACK", font=get_font(int(current_width / 60)),
                              base_color=(0, 0, 0), hovering_color=(25, 51, 0))
@@ -230,6 +252,13 @@ class Gameplay():
                         player.add_card(self.deck.deal())
                         player.sum -= player.bet
                         player.bet *= 2
+
+                        # sound for double case when you end up spending all after a double
+                        if player.sum != 0:
+                            chip_drop_sound.play()
+                        else: 
+                            all_in_sound.play()
+
                         self.check_score()
                         self.dealer_turn()
                 elif event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
@@ -252,7 +281,6 @@ class Gameplay():
             self.screen.blit(pygame.transform.scale(self.background, (current_width, current_height)), (0, 0))
             self.show_hand(self.player, crt_w() / 2.4, crt_h() / 1.4)
             self.show_hand(self.dealer, crt_w() / 2.4, crt_h() / 16)
-
             draw_balance_box(self.screen, self.player.sum, current_width)
             place_chip(self.screen, self.player.bet, current_width, current_height)
             # Before showing the result, sleep the table once so

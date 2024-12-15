@@ -160,11 +160,14 @@ class Gameplay():
                     elif BACK_BUTTON.checkForInput(MOUSE_POS):
                         from game import main
                         main()
-                elif event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                elif event.type == pygame.QUIT:
                     quit_sound.play()
                     time.sleep(0.7)
                     pygame.quit()
                     sys.exit()
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    from game import main
+                    main()
 
             
 
@@ -285,11 +288,14 @@ class Gameplay():
 
                         self.check_score()
                         self.dealer_turn()
-                elif event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                elif event.type == pygame.QUIT:
                     quit_sound.play()
                     time.sleep(0.7)
                     pygame.quit()
                     sys.exit()
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    from game import main
+                    main()
             self.check_score()
 
 
@@ -367,11 +373,14 @@ class Gameplay():
                     elif EXIT_BUTTON.checkForInput(MOUSE_POS):
                         from game import main
                         main()
-                elif event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                elif event.type == pygame.QUIT:
                     quit_sound.play()
                     time.sleep(0.7)
                     pygame.quit()
                     sys.exit()
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    from game import main
+                    main()
 
             
     def dealer_turn(self):

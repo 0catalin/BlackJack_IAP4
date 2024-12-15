@@ -410,6 +410,11 @@ class Gameplay():
             else:
                 self.game_end("PLAYER WON!")
         elif (self.dealer.value == self.player.value):
-            self.game_end("DRAW!")
+            if (self.player.value == 21 and len(self.player) == 2 and len(self.dealer) > 2):
+                self.game_end("PLAYER WON!")
+            elif (self.player.value == 21 and len(self.dealer) == 2 and len(self.player) > 2):
+                self.game_end("DEALER WON!")
+            else:
+                self.game_end("DRAW!")
         
 

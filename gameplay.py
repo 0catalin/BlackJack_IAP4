@@ -75,11 +75,8 @@ class Gameplay():
         error = ""
         
         while(True):
-            screen_info = pygame.display.Info()
-            current_width = screen_info.current_w
-            current_height = screen_info.current_h
             self.screen.fill((255, 255, 255))
-            self.screen.blit(pygame.transform.scale(self.background, (current_width, current_height)), (0, 0))
+            self.screen.blit(pygame.transform.scale(self.background, (crt_w(), crt_h())), (0, 0))
 
             # Do not show hands to player yet
             self.show_hidden_hand(crt_w() / 2.4, crt_h() / 1.4)
@@ -87,26 +84,26 @@ class Gameplay():
 
             draw_balance_box(self.screen, self.player.sum)
 
-            BET_TEXT = get_font(int(current_width / 60)).render("CHOOSE YOUR BET:", True, (255,215,0))
+            BET_TEXT = get_font(int(crt_w() / 60)).render("CHOOSE YOUR BET:", True, (255,215,0))
             self.screen.blit(BET_TEXT, (crt_w() / 128, crt_h() / 2.9))
 
-            FIRST_BET = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.15), int(current_height * 0.05))),
-                         pos=(crt_w() / 8.5, crt_h() / 2.4), text_input = str(int(self.initial_balance / 10)), font=get_font(int(current_width / 60)),
+            FIRST_BET = Button(image=pygame.transform.scale(default_rect, (int(crt_w() * 0.15), int(crt_h() * 0.05))),
+                         pos=(crt_w() / 8.5, crt_h() / 2.4), text_input = str(int(self.initial_balance / 10)), font=get_font(int(crt_w() / 60)),
                          base_color = (255, 215, 0), hovering_color = (255, 140, 0))
-            SECOND_BET = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.15), int(current_height * 0.05))),
-                         pos=(crt_w() / 8.5, crt_h() / 2.4 + int(current_width * 0.045)), text_input = str(int(self.initial_balance / 100)), font=get_font(int(current_width / 60)),
+            SECOND_BET = Button(image=pygame.transform.scale(default_rect, (int(crt_w() * 0.15), int(crt_h() * 0.05))),
+                         pos=(crt_w() / 8.5, crt_h() / 2.4 + int(crt_w() * 0.045)), text_input = str(int(self.initial_balance / 100)), font=get_font(int(crt_w() / 60)),
                          base_color = (255, 215, 0), hovering_color = (255, 140, 0))
-            THIRD_BET = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.15), int(current_height * 0.05))),
-                         pos=(crt_w() / 8.5, crt_h() / 2.4 + int(current_width * 0.090)), text_input = str(int(self.initial_balance / 1000)), font=get_font(int(current_width / 60)),
+            THIRD_BET = Button(image=pygame.transform.scale(default_rect, (int(crt_w() * 0.15), int(crt_h() * 0.05))),
+                         pos=(crt_w() / 8.5, crt_h() / 2.4 + int(crt_w() * 0.090)), text_input = str(int(self.initial_balance / 1000)), font=get_font(int(crt_w() / 60)),
                          base_color = (255, 215, 0), hovering_color = (255, 140, 0))
-            FOURTH_BET = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.15), int(current_height * 0.05))),
-                         pos=(crt_w() / 8.5, crt_h() / 2.4 + int(current_width * 0.135)), text_input = "ALL IN", font=get_font(int(current_width / 60)),
+            FOURTH_BET = Button(image=pygame.transform.scale(default_rect, (int(crt_w() * 0.15), int(crt_h() * 0.05))),
+                         pos=(crt_w() / 8.5, crt_h() / 2.4 + int(crt_w() * 0.135)), text_input = "ALL IN", font=get_font(int(crt_w() / 60)),
                          base_color = (255, 215, 0), hovering_color = (255, 140, 0))
-            BACK_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.1), int(current_height * 0.05))),
-                             pos=(75, 25), text_input="BACK", font=get_font(int(current_width / 60)),
+            BACK_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(crt_w() * 0.1), int(crt_h() * 0.05))),
+                             pos=(75, 25), text_input="BACK", font=get_font(int(crt_w() / 60)),
                              base_color=(0, 0, 0), hovering_color=(25, 51, 0))
 
-            BET_ERROR = get_font(int(current_width / 80)).render(error, True, (255, 0, 0))
+            BET_ERROR = get_font(int(crt_w() / 80)).render(error, True, (255, 0, 0))
             self.screen.blit(BET_ERROR, (crt_w() / 128, crt_h() / 2.4 + crt_w() * 0.16))
 
             MOUSE_POS = pygame.mouse.get_pos()
@@ -185,11 +182,9 @@ class Gameplay():
         player.clear_hand()
         dealer.clear_hand()
 
-        screen_info = pygame.display.Info()
-        current_width = screen_info.current_w
-        current_height = screen_info.current_h
+
         self.screen.fill((255, 255, 255))
-        self.screen.blit(pygame.transform.scale(self.background, (current_width, current_height)), (0, 0))
+        self.screen.blit(pygame.transform.scale(self.background, (crt_w(), crt_h())), (0, 0))
         pygame.display.update() # added those 5 lines to ensure that a background exists after the self.deck.deal sounds are played
 
         player.add_card(self.deck.deal())
@@ -207,11 +202,9 @@ class Gameplay():
             if len(self.deck.cards) < 15:
                 self.deck = Deck(self.deck_number)
                 empty_error = "Running out! Reshuffling..."
-            screen_info = pygame.display.Info()
-            current_width = screen_info.current_w
-            current_height = screen_info.current_h
+
             self.screen.fill((255, 255, 255))
-            self.screen.blit(pygame.transform.scale(self.background, (current_width, current_height)), (0, 0))
+            self.screen.blit(pygame.transform.scale(self.background, (crt_w(), crt_h())), (0, 0))
 
             self.show_hand(self.player, crt_w() / 2.4, crt_h() / 1.4)
             self.show_dealer_hand(self.dealer, crt_w() / 2.4, crt_h() / 16)
@@ -243,23 +236,23 @@ class Gameplay():
                 flip_cards = False
 
 
-            BACK_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.1), int(current_height * 0.05))),
-                             pos=(75, 25), text_input="BACK", font=get_font(int(current_width / 60)),
+            BACK_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(crt_w() * 0.1), int(crt_h() * 0.05))),
+                             pos=(75, 25), text_input="BACK", font=get_font(int(crt_w() / 60)),
                              base_color=(0, 0, 0), hovering_color=(25, 51, 0))
 
             HIT_BUTTON = Button(image=pygame.transform.scale(default_rect, (crt_w() / 8.5, crt_h() / 7.5)),
-                             pos=(crt_w() / 1.1, crt_h() / 1.6), text_input="HIT", font=get_font(int(current_width / 50)),
+                             pos=(crt_w() / 1.1, crt_h() / 1.6), text_input="HIT", font=get_font(int(crt_w() / 50)),
                              base_color=(0, 0, 0), hovering_color=(255, 215, 0))
 
             STAND_BUTTON = Button(image=pygame.transform.scale(default_rect, (crt_w() / 8.5, crt_h() / 7.5)),
-                             pos=(crt_w() / 1.1, crt_h() / 1.2), text_input="STAND", font=get_font(int(current_width / 50)),
+                             pos=(crt_w() / 1.1, crt_h() / 1.2), text_input="STAND", font=get_font(int(crt_w() / 50)),
                              base_color=(0, 0, 0), hovering_color=(255, 69, 0))
 
             DOUBLE_BUTTON = Button(image=pygame.transform.scale(default_rect, (crt_w() / 8.5, crt_h() / 7.5)),
-                             pos=(crt_w() / 1.1, crt_h() * 0.41), text_input="DOUBLE", font=get_font(int(current_width / 50)),
+                             pos=(crt_w() / 1.1, crt_h() * 0.41), text_input="DOUBLE", font=get_font(int(crt_w() / 50)),
                              base_color=(0, 0, 0), hovering_color=(0,0,205))
 
-            DOUBLE_ERROR = get_font(int(current_width / 80)).render(double_error, True, (255, 0, 0))
+            DOUBLE_ERROR = get_font(int(crt_w() / 80)).render(double_error, True, (255, 0, 0))
             self.screen.blit(DOUBLE_ERROR, (crt_w() / 1.25, crt_h() / 2))
             
             MOUSE_POS = pygame.mouse.get_pos()
@@ -346,12 +339,9 @@ class Gameplay():
                     
         while(True):
 
-            screen_info = pygame.display.Info()
-            current_width = screen_info.current_w
-            current_height = screen_info.current_h
 
             # Keep background and cards on table
-            self.screen.blit(pygame.transform.scale(self.background, (current_width, current_height)), (0, 0))
+            self.screen.blit(pygame.transform.scale(self.background, (crt_w(), crt_h())), (0, 0))
             self.show_hand(self.player, crt_w() / 2.4, crt_h() / 1.4)
             self.show_hand(self.dealer, crt_w() / 2.4, crt_h() / 16)
 
@@ -371,9 +361,9 @@ class Gameplay():
 
             # Round over window
             pygame.draw.rect(self.screen, (0, 0, 0), (crt_w() / 4.5, crt_h() / 4.5, crt_w() / 1.8, crt_h() / 1.8))
-            OVER_TEXT = get_font(int(current_width / 34)).render("ROUND OVER", True, "#FB773C")
+            OVER_TEXT = get_font(int(crt_w() / 34)).render("ROUND OVER", True, "#FB773C")
             self.screen.blit(OVER_TEXT, (crt_w() / 2.7, crt_h() / 4))
-            RESULT_TEXT = get_font(int(current_width / 34)).render(text, True, "#FB773C")
+            RESULT_TEXT = get_font(int(crt_w() / 34)).render(text, True, "#FB773C")
             result_position = (0, 0)
 
             # Decide result of round
@@ -392,11 +382,11 @@ class Gameplay():
             self.screen.blit(RESULT_TEXT, result_position)
                 
             # Option buttons
-            NEXT_ROUND_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.2), int(current_height * 0.1))),
-                             pos=(crt_w() / 2, crt_h() / 2), text_input="NEXT_ROUND", font=get_font(int(current_width / 60)),
+            NEXT_ROUND_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(crt_w() * 0.2), int(crt_h() * 0.1))),
+                             pos=(crt_w() / 2, crt_h() / 2), text_input="NEXT_ROUND", font=get_font(int(crt_w() / 60)),
                              base_color=(255, 215, 0), hovering_color=(255, 140, 0))
-            EXIT_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.2), int(current_height * 0.1))),
-                             pos=(crt_w() / 2, crt_h() / 1.6), text_input="EXIT", font=get_font(int(current_width / 60)),
+            EXIT_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(crt_w() * 0.2), int(crt_h() * 0.1))),
+                             pos=(crt_w() / 2, crt_h() / 1.6), text_input="EXIT", font=get_font(int(crt_w() / 60)),
                              base_color=(255, 215, 0), hovering_color=(255, 140, 0))
 
             MOUSE_POS = pygame.mouse.get_pos()
@@ -442,10 +432,7 @@ class Gameplay():
         flip_card.play()
         time.sleep(0.2)
         while(self.dealer.value <= 16 and not (self.player.value == 21 and len(self.player.cards) == 2)):
-            screen_info = pygame.display.Info()
-            current_width = screen_info.current_w
-            current_height = screen_info.current_h
-            self.screen.blit(pygame.transform.scale(self.background, (current_width, current_height)), (0, 0))
+            self.screen.blit(pygame.transform.scale(self.background, (crt_w(), crt_h())), (0, 0))
 
             self.show_hand(self.player, crt_w() / 2.4, crt_h() / 1.4)
             self.show_hand(self.dealer, crt_w() / 2.4, crt_h() / 16)

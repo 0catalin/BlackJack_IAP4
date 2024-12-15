@@ -12,6 +12,8 @@ button_click_sound = pygame.mixer.Sound("sounds/button.mp3")
 default_rect = pygame.image.load("assets/Options Rect.png")
 chip_drop_sound = pygame.mixer.Sound("sounds/chip.mp3")
 all_in_sound = pygame.mixer.Sound("sounds/all_in.mp3")
+flip_card = pygame.mixer.Sound("sounds/flip_card.mp3")
+
 class Gameplay():
     def __init__(self, screen, background, deck_number, initial_balance):
         self.background = background
@@ -22,12 +24,12 @@ class Gameplay():
         self.player = Hand(self.initial_balance)
         self.dealer = Hand(0)
 
+
     # Shows the given card face up.
     def show_card(self, card, position):
         card_image = card.load_card_image()
         card_image = pygame.transform.scale(card_image, (crt_w() / 10.2, crt_h() / 3.9))
         self.screen.blit(card_image, position)
-
 
 
     # Shows a face down card.
@@ -43,21 +45,31 @@ class Gameplay():
         y = start_y
         for card in hand.cards:
             self.show_card(card, (x, y))
-            x = x + 50
+            x = x + crt_w() / 20.4
+
 
     # Shows hand with one card face down.
     def show_dealer_hand(self, hand, start_x, start_y):
         x = start_x
         y = start_y
         self.show_card(hand.cards[0], (x, y))
-        self.show_hidden_card((x + 50, y))
+        self.show_hidden_card((x + crt_w() / 20.4, y))
 
+    # Shows hand with all cards face down
+    def show_hidden_hand(self, start_x, start_y):
+        x = start_x
+        y = start_y
+        self.show_hidden_card((x, y))
+        self.show_hidden_card((x + crt_w() / 20.4, y))
+
+    # Checks score after a hit
     def check_score(self):
         if self.player.value > 21:
             self.game_end("BUST!")
         elif self.player.value == 21:
             self.dealer_turn()
 
+    # Betting state
     def choose_bet(self):
         error = ""
         
@@ -68,10 +80,11 @@ class Gameplay():
             self.screen.fill((255, 255, 255))
             self.screen.blit(pygame.transform.scale(self.background, (current_width, current_height)), (0, 0))
 
-            self.show_hand(self.player, crt_w() / 2.4, crt_h() / 1.4)
-            self.show_dealer_hand(self.dealer, crt_w() / 2.4, crt_h() / 16)
+            # Do not show hands to player yet
+            self.show_hidden_hand(crt_w() / 2.4, crt_h() / 1.4)
+            self.show_hidden_hand(crt_w() / 2.4, crt_h() / 16)
 
-            draw_balance_box(self.screen, self.player.sum, current_width)
+            draw_balance_box(self.screen, self.player.sum)
 
             BET_TEXT = get_font(int(current_width / 60)).render("CHOOSE YOUR BET:", True, (255,215,0))
             self.screen.blit(BET_TEXT, (crt_w() / 128, crt_h() / 2.9))
@@ -177,6 +190,7 @@ class Gameplay():
         double_error = ""
 
         place_chip_once_sound = True
+        flip_cards = True
         while(True):
             if len(self.deck.cards) < 15:
                 print("running out...")
@@ -190,8 +204,8 @@ class Gameplay():
             self.show_hand(self.player, crt_w() / 2.4, crt_h() / 1.4)
             self.show_dealer_hand(self.dealer, crt_w() / 2.4, crt_h() / 16)
 
-            draw_balance_box(self.screen, self.player.sum, current_width)
-            place_chip(self.screen, self.player.bet, current_width, current_height)
+            draw_balance_box(self.screen, self.player.sum)
+            place_chip(self.screen, self.player.bet)
 
             # ensures that the sound is only played once and that the right sound is played
             if place_chip_once_sound and self.player.sum != 0:
@@ -200,6 +214,16 @@ class Gameplay():
             elif place_chip_once_sound: 
                 all_in_sound.play()
                 place_chip_once_sound = False
+
+            if flip_cards:
+                flip_card.play()
+                time.sleep(0.2)
+                flip_card.play()
+                time.sleep(0.2)
+                flip_card.play()
+                time.sleep(0.2)
+                flip_cards = False
+
 
             BACK_BUTTON = Button(image=pygame.transform.scale(default_rect, (int(current_width * 0.1), int(current_height * 0.05))),
                              pos=(75, 25), text_input="BACK", font=get_font(int(current_width / 60)),
@@ -281,13 +305,13 @@ class Gameplay():
             self.screen.blit(pygame.transform.scale(self.background, (current_width, current_height)), (0, 0))
             self.show_hand(self.player, crt_w() / 2.4, crt_h() / 1.4)
             self.show_hand(self.dealer, crt_w() / 2.4, crt_h() / 16)
-            draw_balance_box(self.screen, self.player.sum, current_width)
-            place_chip(self.screen, self.player.bet, current_width, current_height)
+            draw_balance_box(self.screen, self.player.sum)
+            place_chip(self.screen, self.player.bet)
             # Before showing the result, sleep the table once so
             # that the window doesn't appear instantly
             if (break_time):
                 pygame.display.flip()
-                time.sleep(1)
+                time.sleep(0.7)
                 break_time = False
 
             # Round over window
@@ -351,6 +375,8 @@ class Gameplay():
 
             
     def dealer_turn(self):
+        flip_card.play()
+        time.sleep(0.2)
         while(self.dealer.value <= 16 and not (self.player.value == 21 and len(self.player.cards) == 2)):
             screen_info = pygame.display.Info()
             current_width = screen_info.current_w
@@ -360,8 +386,8 @@ class Gameplay():
             self.show_hand(self.player, crt_w() / 2.4, crt_h() / 1.4)
             self.show_hand(self.dealer, crt_w() / 2.4, crt_h() / 16)
             
-            draw_balance_box(self.screen, self.player.sum, current_width)
-            place_chip(self.screen, self.player.bet, current_width, current_height)
+            draw_balance_box(self.screen, self.player.sum)
+            place_chip(self.screen, self.player.bet)
             MOUSE_POS = pygame.mouse.get_pos()
 
             pygame.display.flip()

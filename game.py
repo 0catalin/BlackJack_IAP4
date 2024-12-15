@@ -86,12 +86,12 @@ def main():
         SCREEN.blit(MENU_TEXT, MENU_RECT)
 
         # create buttons
-        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(current_width / 2, current_height * 0.35),
+        PLAY_BUTTON = Button(image=pygame.transform.scale(play_button_image, (int(current_width * 0.2), int(current_height * 0.15))), pos=(current_width / 2, current_height * 0.34),
                              text_input="PLAY", font=get_font(int(current_width / 22)), base_color="#d7fcd4", hovering_color=(25, 51, 0))
-        STATISTICS_BUTTON = Button(image=pygame.transform.scale(second_image, (int(current_width * 0.64), second_image.get_height())),
-                                   pos=(current_width / 2, current_height * 0.55),
+        STATISTICS_BUTTON = Button(image=pygame.transform.scale(second_image, (int(current_width * 0.5), int(current_height * 0.15))),
+                                   pos=(current_width / 2, current_height * 0.5),
                                    text_input="STATISTICS", font=get_font(int(current_width / 22)), base_color="#d7fcd4", hovering_color=(25, 51, 0))
-        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(current_width / 2, current_height * 0.75),
+        QUIT_BUTTON = Button(image=pygame.transform.scale(quit_button_image, (int(current_width * 0.2), int(current_height * 0.15))), pos=(current_width / 2, current_height * 0.66),
                              text_input="QUIT", font=get_font(int(current_width / 22)), base_color="#d7fcd4", hovering_color=(25, 51, 0))
 
 

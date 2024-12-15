@@ -39,7 +39,7 @@ counter = False
 
 def main():
     # plays the main music infinitely
-    pygame.mixer.music.load("sounds/background2.mp3")
+    pygame.mixer.music.load("sounds/background.mp3")
     pygame.mixer.music.play(loops=-1)
 
      # prevents it from getting written accidentally, the key is unique

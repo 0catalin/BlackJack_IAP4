@@ -1,7 +1,7 @@
 import random, pygame, sys, time
 
 pygame.mixer.init()
-place_card_sound = pygame.mixer.Sound("sounds/flip_card.mp3")
+place_card_sound = pygame.mixer.Sound("sounds/place_card.mp3")
 
 class Card:
     def __init__(self, suit, rank, value):

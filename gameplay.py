@@ -198,7 +198,6 @@ class Gameplay():
 
         while(True):
             if len(self.deck.cards) < 15:
-                print("running out...")
                 self.deck = Deck(self.deck_number)
             screen_info = pygame.display.Info()
             current_width = screen_info.current_w
@@ -211,6 +210,11 @@ class Gameplay():
 
             draw_balance_box(self.screen, self.player.sum)
             place_chip(self.screen, self.player.bet)
+
+            SCORE_TEXT = get_font(int(crt_w() / 70)).render("PLAYER: " + str(self.player.value), True, (255, 215, 0))
+            self.screen.blit(SCORE_TEXT, (crt_w() / 4, crt_h() / 1.1))
+            SCORE_TEXT = get_font(int(crt_w() / 70)).render("DEALER: " + str(self.dealer.cards[0].value), True, (255, 0, 0))
+            self.screen.blit(SCORE_TEXT, (crt_w() / 4, crt_h() / 17))
 
             # ensures that the sound is only played once and that the right sound is played
             if place_chip_once_sound and self.player.sum != 0:
@@ -331,8 +335,14 @@ class Gameplay():
             self.screen.blit(pygame.transform.scale(self.background, (current_width, current_height)), (0, 0))
             self.show_hand(self.player, crt_w() / 2.4, crt_h() / 1.4)
             self.show_hand(self.dealer, crt_w() / 2.4, crt_h() / 16)
+
             draw_balance_box(self.screen, self.player.sum)
             place_chip(self.screen, self.player.bet)
+
+            SCORE_TEXT = get_font(int(crt_w() / 70)).render("PLAYER: " + str(self.player.value), True, (255, 215, 0))
+            self.screen.blit(SCORE_TEXT, (crt_w() / 4, crt_h() / 1.1))
+            SCORE_TEXT = get_font(int(crt_w() / 70)).render("DEALER: " + str(self.dealer.value), True, (255, 0, 0))
+            self.screen.blit(SCORE_TEXT, (crt_w() / 4, crt_h() / 17))
             # Before showing the result, sleep the table once so
             # that the window doesn't appear instantly
             if (break_time):
@@ -417,6 +427,11 @@ class Gameplay():
             
             draw_balance_box(self.screen, self.player.sum)
             place_chip(self.screen, self.player.bet)
+
+            SCORE_TEXT = get_font(int(crt_w() / 70)).render("PLAYER: " + str(self.player.value), True, (255, 215, 0))
+            self.screen.blit(SCORE_TEXT, (crt_w() / 4, crt_h() / 1.1))
+            SCORE_TEXT = get_font(int(crt_w() / 70)).render("DEALER: " + str(self.dealer.value), True, (255, 0, 0))
+            self.screen.blit(SCORE_TEXT, (crt_w() / 4, crt_h() / 17))
             MOUSE_POS = pygame.mouse.get_pos()
 
             pygame.display.flip()

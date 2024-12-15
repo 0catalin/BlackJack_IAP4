@@ -293,7 +293,7 @@ def statistics():
     button_click_sound.stop()
 
     # create a statistics instance which takes the data from the database file
-    statistics = Statistics()
+    game_statistics = Statistics()
     while True:
 
         # get current height and width of screen
@@ -324,23 +324,23 @@ def statistics():
         SCREEN.blit(STATISTICS_TEXT, STATISTICS_RECT)
 
         # place the statistics in the resized transparent image
-        STATISTICS_TEXT = get_font(int(current_width / 60)).render("Total Games Played:" + " " * 5 + str(statistics.total_games), True, (255, 255, 255))
+        STATISTICS_TEXT = get_font(int(current_width / 60)).render("Total Games Played:" + " " * 5 + str(game_statistics.total_games), True, (255, 255, 255))
         STATISTICS_RECT = STATISTICS_TEXT.get_rect(center=(current_width / 3, current_height * 0.35))
         SCREEN.blit(STATISTICS_TEXT, STATISTICS_RECT)
 
-        STATISTICS_TEXT = get_font(int(current_width / 60)).render("Total Wins:" + " " * 5 + str(statistics.total_wins), True, (255, 255, 255))
+        STATISTICS_TEXT = get_font(int(current_width / 60)).render("Total Wins:" + " " * 5 + str(game_statistics.total_wins), True, (255, 255, 255))
         STATISTICS_RECT = STATISTICS_TEXT.get_rect(center=(current_width / 3, current_height * 0.45))
         SCREEN.blit(STATISTICS_TEXT, STATISTICS_RECT)
 
-        STATISTICS_TEXT = get_font(int(current_width / 60)).render("Total Losses:" + " " * 5 + str(statistics.total_losses), True, (255, 255, 255))
+        STATISTICS_TEXT = get_font(int(current_width / 60)).render("Total Losses:" + " " * 5 + str(game_statistics.total_losses), True, (255, 255, 255))
         STATISTICS_RECT = STATISTICS_TEXT.get_rect(center=(current_width / 3, current_height * 0.55))
         SCREEN.blit(STATISTICS_TEXT, STATISTICS_RECT)
 
-        STATISTICS_TEXT = get_font(int(current_width / 60)).render("Total Blackjacks:" + " " * 5 + str(statistics.total_blackjacks), True, (255, 255, 255))
+        STATISTICS_TEXT = get_font(int(current_width / 60)).render("Total Blackjacks:" + " " * 5 + str(game_statistics.total_blackjacks), True, (255, 255, 255))
         STATISTICS_RECT = STATISTICS_TEXT.get_rect(center=(current_width / 3, current_height * 0.65))
         SCREEN.blit(STATISTICS_TEXT, STATISTICS_RECT)
 
-        STATISTICS_TEXT = get_font(int(current_width / 60)).render("Total Profit:" + " " * 5 + str(statistics.profit) , True, (255, 255, 255))
+        STATISTICS_TEXT = get_font(int(current_width / 60)).render("Total Profit:" + " " * 5 + str(game_statistics.profit) , True, (255, 255, 255))
         STATISTICS_RECT = STATISTICS_TEXT.get_rect(center=(current_width / 3, current_height * 0.75))
         SCREEN.blit(STATISTICS_TEXT, STATISTICS_RECT)
 
@@ -350,9 +350,11 @@ def statistics():
         BACK_BUTTON = Button(image=pygame.transform.scale(second_image, (int(current_width * 0.1), int(current_height * 0.05))),
                              pos=(75, 25), text_input="BACK", font=get_font(int(current_width / 60)),
                              base_color=(0, 0, 0), hovering_color=(25, 51, 0))
-
+        STATISTICS_BUTTON = Button(image=pygame.transform.scale(second_image, (int(current_width * 0.25), int(current_height * 0.07))),
+                                   pos=(current_width * 0.87, current_height * 0.04),
+                                   text_input="RESET STATISTICS", font=get_font(int(current_width / 70)), base_color=(0, 0, 0), hovering_color=(25, 51, 0))
         # # update button color depending on where the cursor is
-        for button in [BACK_BUTTON]:
+        for button in [BACK_BUTTON, STATISTICS_BUTTON]:
             button.changeColor(PLAY_MOUSE_POS)
             button.update(SCREEN)
 
@@ -368,6 +370,11 @@ def statistics():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if BACK_BUTTON.checkForInput(PLAY_MOUSE_POS):
                     main()
+                elif STATISTICS_BUTTON.checkForInput(PLAY_MOUSE_POS):
+
+                    # if remove statistics is pressed remove file and call statistics function
+                    os.remove("database.txt")
+                    statistics()
             # if esc is pressed run main loop, go back
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 main()

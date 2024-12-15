@@ -2,6 +2,7 @@ import pygame, sys, time
 from button import Button
 from game_logic import Card, Deck, Hand
 from utils import get_font, draw_balance_box, place_chip, crt_h, crt_w
+from statistics import Statistics
 
 SCREEN_HEIGHT = 720
 SCREEN_WIDTH = 1280
@@ -194,6 +195,7 @@ class Gameplay():
 
         place_chip_once_sound = True
         flip_cards = True
+
         while(True):
             if len(self.deck.cards) < 15:
                 print("running out...")
@@ -301,6 +303,24 @@ class Gameplay():
 
     def game_end(self, text):
         break_time = True
+        statistics = Statistics()
+        statistics.total_games += 1
+        match text:
+            case "BUST!":
+                statistics.total_losses += 1
+                statistics.profit -= int(self.player.bet)
+            case "BLACKJACK!":
+                statistics.total_blackjacks += 1
+                statistics.total_wins += 1 
+                statistics.profit += int(1.5 * self.player.bet)
+            case "PLAYER WON!":
+                statistics.total_wins += 1
+                statistics.profit += int(self.player.bet)
+            case "DEALER WON!":
+                statistics.total_losses += 1
+                statistics.profit -= int(self.player.bet)
+        statistics.encryptMessageAndInsertIntoFile()
+                    
         while(True):
 
             screen_info = pygame.display.Info()
@@ -410,9 +430,9 @@ class Gameplay():
             else:
                 self.game_end("PLAYER WON!")
         elif (self.dealer.value == self.player.value):
-            if (self.player.value == 21 and len(self.player) == 2 and len(self.dealer) > 2):
-                self.game_end("PLAYER WON!")
-            elif (self.player.value == 21 and len(self.dealer) == 2 and len(self.player) > 2):
+            if (self.player.value == 21 and len(self.player.cards) == 2 and len(self.dealer.cards) > 2):
+                self.game_end("BLACKJACK!")
+            elif (self.player.value == 21 and len(self.dealer.cards) == 2 and len(self.player.cards) > 2):
                 self.game_end("DEALER WON!")
             else:
                 self.game_end("DRAW!")

@@ -159,9 +159,15 @@ class Gameplay():
                         self.player.sum = 0
                         return
                     elif BACK_BUTTON.checkForInput(MOUSE_POS):
+                        statistics = Statistics()
+                        statistics.profit += int(self.player.sum - self.initial_balance)
+                        statistics.encryptMessageAndInsertIntoFile()
                         from game import main
                         main()
                 elif event.type == pygame.QUIT:
+                    statistics = Statistics()
+                    statistics.profit += int(self.player.sum - self.initial_balance)
+                    statistics.encryptMessageAndInsertIntoFile()
                     quit_sound.play()
                     time.sleep(0.7)
                     pygame.quit()
@@ -192,6 +198,7 @@ class Gameplay():
         dealer.add_card(self.deck.deal())
         self.choose_bet()
         double_error = ""
+        empty_error = ""
 
         place_chip_once_sound = True
         flip_cards = True
@@ -199,6 +206,7 @@ class Gameplay():
         while(True):
             if len(self.deck.cards) < 15:
                 self.deck = Deck(self.deck_number)
+                empty_error = "Running out! Reshuffling..."
             screen_info = pygame.display.Info()
             current_width = screen_info.current_w
             current_height = screen_info.current_h
@@ -215,7 +223,8 @@ class Gameplay():
             self.screen.blit(SCORE_TEXT, (crt_w() / 4, crt_h() / 1.1))
             SCORE_TEXT = get_font(int(crt_w() / 70)).render("DEALER: " + str(self.dealer.cards[0].value), True, (255, 0, 0))
             self.screen.blit(SCORE_TEXT, (crt_w() / 4, crt_h() / 17))
-
+            EMPTY_TEXT = get_font(int(crt_w() / 70)).render(empty_error, True, (255, 0, 0))
+            self.screen.blit(EMPTY_TEXT, (crt_w() / 1.6, crt_h() / 40))
             # ensures that the sound is only played once and that the right sound is played
             if place_chip_once_sound and self.player.sum != 0:
                 chip_drop_sound.play()
@@ -263,6 +272,9 @@ class Gameplay():
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if BACK_BUTTON.checkForInput(MOUSE_POS):
+                        statistics = Statistics()
+                        statistics.profit += int(self.player.sum - self.initial_balance)
+                        statistics.encryptMessageAndInsertIntoFile()
                         from game import main
                         main()
                     elif HIT_BUTTON.checkForInput(MOUSE_POS):
@@ -270,10 +282,14 @@ class Gameplay():
                         time.sleep(0.3)
                         button_click_sound.stop()
                         player.add_card(self.deck.deal())
+                        empty_error = ""
+                        double_error = ""
                     elif STAND_BUTTON.checkForInput(MOUSE_POS):
                         button_click_sound.play()
                         time.sleep(0.3)
                         button_click_sound.stop()
+                        empty_error = ""
+                        double_error = ""
                         self.dealer_turn()
                     elif DOUBLE_BUTTON.checkForInput(MOUSE_POS):
                         button_click_sound.play()
@@ -285,7 +301,7 @@ class Gameplay():
                         player.add_card(self.deck.deal())
                         player.sum -= player.bet
                         player.bet *= 2
-
+                        empty_error = ""
                         # sound for double case when you end up spending all after a double
                         if player.sum != 0:
                             chip_drop_sound.play()
@@ -295,6 +311,9 @@ class Gameplay():
                         self.check_score()
                         self.dealer_turn()
                 elif event.type == pygame.QUIT:
+                    statistics = Statistics()
+                    statistics.profit += int(self.player.sum - self.initial_balance)
+                    statistics.encryptMessageAndInsertIntoFile()
                     quit_sound.play()
                     time.sleep(0.7)
                     pygame.quit()
@@ -312,17 +331,17 @@ class Gameplay():
         match text:
             case "BUST!":
                 statistics.total_losses += 1
-                statistics.profit -= int(self.player.bet)
+                # statistics.profit -= int(self.player.bet)
             case "BLACKJACK!":
                 statistics.total_blackjacks += 1
                 statistics.total_wins += 1 
-                statistics.profit += int(1.5 * self.player.bet)
+                # statistics.profit += int(1.5 * self.player.bet)
             case "PLAYER WON!":
                 statistics.total_wins += 1
-                statistics.profit += int(self.player.bet)
+                # statistics.profit += int(self.player.bet)
             case "DEALER WON!":
                 statistics.total_losses += 1
-                statistics.profit -= int(self.player.bet)
+                # statistics.profit -= int(self.player.bet)
         statistics.encryptMessageAndInsertIntoFile()
                     
         while(True):
@@ -401,9 +420,15 @@ class Gameplay():
                                 self.player.sum += 2 * self.player.bet
                         self.loop()
                     elif EXIT_BUTTON.checkForInput(MOUSE_POS):
+                        statistics = Statistics()
+                        statistics.profit += int(self.player.sum - self.initial_balance)
+                        statistics.encryptMessageAndInsertIntoFile()
                         from game import main
                         main()
                 elif event.type == pygame.QUIT:
+                    statistics = Statistics()
+                    statistics.profit += int(self.player.sum - self.initial_balance)
+                    statistics.encryptMessageAndInsertIntoFile()
                     quit_sound.play()
                     time.sleep(0.7)
                     pygame.quit()

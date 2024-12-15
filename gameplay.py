@@ -198,15 +198,18 @@ class Gameplay():
         dealer.add_card(self.deck.deal())
         self.choose_bet()
         double_error = ""
-        empty_error = ""
-
+        empty_error = "Running out! Reshuffling..."
         place_chip_once_sound = True
         flip_cards = True
 
         while(True):
             if len(self.deck.cards) < 15:
                 self.deck = Deck(self.deck_number)
-                empty_error = "Running out! Reshuffling..."
+                EMPTY_TEXT = get_font(int(crt_w() / 70)).render(empty_error, True, (255, 0, 0))
+                self.screen.blit(EMPTY_TEXT, (crt_w() / 1.6, crt_h() / 40))
+                pygame.display.flip()
+                time.sleep(1)
+                
             screen_info = pygame.display.Info()
             current_width = screen_info.current_w
             current_height = screen_info.current_h
@@ -223,8 +226,7 @@ class Gameplay():
             self.screen.blit(SCORE_TEXT, (crt_w() / 4, crt_h() / 1.1))
             SCORE_TEXT = get_font(int(crt_w() / 70)).render("DEALER: " + str(self.dealer.cards[0].value), True, (255, 0, 0))
             self.screen.blit(SCORE_TEXT, (crt_w() / 4, crt_h() / 17))
-            EMPTY_TEXT = get_font(int(crt_w() / 70)).render(empty_error, True, (255, 0, 0))
-            self.screen.blit(EMPTY_TEXT, (crt_w() / 1.6, crt_h() / 40))
+
             # ensures that the sound is only played once and that the right sound is played
             if place_chip_once_sound and self.player.sum != 0:
                 chip_drop_sound.play()
@@ -282,13 +284,13 @@ class Gameplay():
                         time.sleep(0.3)
                         button_click_sound.stop()
                         player.add_card(self.deck.deal())
-                        empty_error = ""
+
                         double_error = ""
                     elif STAND_BUTTON.checkForInput(MOUSE_POS):
                         button_click_sound.play()
                         time.sleep(0.3)
                         button_click_sound.stop()
-                        empty_error = ""
+
                         double_error = ""
                         self.dealer_turn()
                     elif DOUBLE_BUTTON.checkForInput(MOUSE_POS):
@@ -301,7 +303,7 @@ class Gameplay():
                         player.add_card(self.deck.deal())
                         player.sum -= player.bet
                         player.bet *= 2
-                        empty_error = ""
+
                         # sound for double case when you end up spending all after a double
                         if player.sum != 0:
                             chip_drop_sound.play()

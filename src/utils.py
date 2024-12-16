@@ -1,7 +1,7 @@
 import pygame
 
 def get_font(size):
-    return pygame.font.Font("assets/font.ttf", size)
+    return pygame.font.Font("../assets/font.ttf", size)
 
 # Shows player balance
 def draw_balance_box(screen, balance):
@@ -13,7 +13,7 @@ def draw_balance_box(screen, balance):
 # Places chip on table
 def place_chip(screen, bet):
     AMOUNT_TEXT = get_font(int(crt_w() / 97)).render(str(int(bet)), True, (255,215,0))
-    chip = pygame.image.load("assets/bet_chip.png")
+    chip = pygame.image.load("../assets/bet_chip.png")
     chip = pygame.transform.scale(chip, (crt_w() / 6.4 , crt_h() / 3.6))
     screen.blit(chip, (crt_w() / 2.5, crt_h() / 2.6))
     chip_rect = chip.get_rect()

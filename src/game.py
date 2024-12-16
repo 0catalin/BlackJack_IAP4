@@ -13,10 +13,10 @@ pygame.mixer.init()
 clock = pygame.time.Clock()
 
 # create sound objects
-button_click_sound = pygame.mixer.Sound("sounds/button.mp3")
-quit_sound = pygame.mixer.Sound("sounds/quit_game.mp3")
-rect_sound = pygame.mixer.Sound("sounds/click.mp3")
-wrong_input_sound = pygame.mixer.Sound("sounds/wrong_input.mp3")
+button_click_sound = pygame.mixer.Sound("../sounds/button.mp3")
+quit_sound = pygame.mixer.Sound("../sounds/quit_game.mp3")
+rect_sound = pygame.mixer.Sound("../sounds/click.mp3")
+wrong_input_sound = pygame.mixer.Sound("../sounds/wrong_input.mp3")
 
 # set up constants and caption
 SCREEN_HEIGHT = 720
@@ -25,13 +25,13 @@ SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE
 pygame.display.set_caption("BlackJack for everyone")
 
 # loading and scaling background images
-BG = pygame.image.load("assets/main_menu_background.jpg")
+BG = pygame.image.load("../assets/main_menu_background.jpg")
 BG = pygame.transform.scale(BG, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-table_bg = pygame.image.load("assets/table_bg.jpg")
+table_bg = pygame.image.load("../assets/table_bg.jpg")
 table_bg = pygame.transform.scale(table_bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-second_image = pygame.image.load("assets/Options Rect.png")
+second_image = pygame.image.load("../assets/Options Rect.png")
 
 # counter variable to prevent the button sound being played when the game is opened
 counter = False
@@ -39,11 +39,11 @@ counter = False
 
 def main():
     # plays the main music infinitely
-    pygame.mixer.music.load("sounds/background.mp3")
+    pygame.mixer.music.load("../sounds/background.mp3")
     pygame.mixer.music.play(loops=-1)
 
      # prevents it from getting written accidentally, the key is unique
-    os.chmod("secret.key", stat.S_IREAD)
+    os.chmod("../secret.key", stat.S_IREAD)
 
     # to not play the sound when the game starts
     global counter
@@ -60,8 +60,8 @@ def main():
 
     # scale the bg to the height and width which are initially chosen for the game and load images
     BG_SCALED = pygame.transform.scale(BG, (initial_width, initial_height))
-    play_button_image = pygame.image.load("assets/Play Rect.png")
-    quit_button_image = pygame.image.load("assets/Quit Rect.png")
+    play_button_image = pygame.image.load("../assets/Play Rect.png")
+    quit_button_image = pygame.image.load("../assets/Quit Rect.png")
 
     # loop to always check elements
     while True:
@@ -116,7 +116,7 @@ def main():
                     time.sleep(0.3)
                     button_click_sound.stop()
                     pygame.mixer.music.stop()
-                    pygame.mixer.music.load("sounds/background.mp3")
+                    pygame.mixer.music.load("../sounds/background.mp3")
                     pygame.mixer.music.play(loops=-1)
 
                 if STATISTICS_BUTTON.checkForInput(MENU_MOUSE_POS):
@@ -384,7 +384,7 @@ def statistics():
                 elif STATISTICS_BUTTON.checkForInput(PLAY_MOUSE_POS):
 
                     # if remove statistics is pressed remove file and call statistics function
-                    os.remove("database.txt")
+                    os.remove("../database.txt")
                     statistics()
                     return
             # if esc is pressed run main loop, go back
@@ -401,7 +401,7 @@ def gameplay(deck_number, initial_balance):
     pygame.mixer.music.fadeout(2000)
 
     # play 2nd music
-    pygame.mixer.music.load("sounds/guitar_background.mp3")
+    pygame.mixer.music.load("../sounds/guitar_background.mp3")
     pygame.mixer.music.play(loops=-1)
 
     # play click sound

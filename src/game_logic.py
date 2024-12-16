@@ -1,14 +1,14 @@
 import random, pygame, sys, time
 
 pygame.mixer.init()
-place_card_sound = pygame.mixer.Sound("sounds/place_card.mp3")
+place_card_sound = pygame.mixer.Sound("../sounds/place_card.mp3")
 
 class Card:
     def __init__(self, suit, rank, value):
         self.suit = suit
         self.rank = rank
         self.value = value
-        self.image_path = "assets/card_assets/" + self.rank + "_of_" + self.suit
+        self.image_path = "../assets/card_assets/" + self.rank + "_of_" + self.suit
         # This is done to get the right images for jacks, queens and kings
         # (The versions with 2 at the end look nicer)
         if self.rank in ['jack', 'queen', 'king']:
@@ -21,7 +21,7 @@ class Card:
 
     # Load card face-down
     def load_hidden_card(self):
-        return pygame.image.load("assets/card_assets/back_of_card.png")
+        return pygame.image.load("../assets/card_assets/back_of_card.png")
 
 
 

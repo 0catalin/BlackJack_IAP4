@@ -8,13 +8,13 @@ SCREEN_HEIGHT = 720
 SCREEN_WIDTH = 1280
 
 pygame.mixer.init()
-quit_sound = pygame.mixer.Sound("sounds/quit_game.mp3")
-button_click_sound = pygame.mixer.Sound("sounds/button.mp3")
-default_rect = pygame.image.load("assets/Options Rect.png")
-chip_drop_sound = pygame.mixer.Sound("sounds/chip.mp3")
-all_in_sound = pygame.mixer.Sound("sounds/all_in.mp3")
-flip_card = pygame.mixer.Sound("sounds/flip_card.mp3")
-shuffle_cards = pygame.mixer.Sound("sounds/shuffle_cards.mp3")
+quit_sound = pygame.mixer.Sound("../sounds/quit_game.mp3")
+button_click_sound = pygame.mixer.Sound("../sounds/button.mp3")
+default_rect = pygame.image.load("../assets/Options Rect.png")
+chip_drop_sound = pygame.mixer.Sound("../sounds/chip.mp3")
+all_in_sound = pygame.mixer.Sound("../sounds/all_in.mp3")
+flip_card = pygame.mixer.Sound("../sounds/flip_card.mp3")
+shuffle_cards = pygame.mixer.Sound("../sounds/shuffle_cards.mp3")
 
 class Gameplay():
     def __init__(self, screen, background, deck_number, initial_balance):
@@ -40,7 +40,7 @@ class Gameplay():
 
     # Shows a face down card.
     def show_hidden_card(self, position):
-        hidden_image = pygame.image.load("assets/card_assets/back_of_card.png")
+        hidden_image = pygame.image.load("../assets/card_assets/back_of_card.png")
         hidden_image = pygame.transform.scale(hidden_image, (crt_w() / 10.2, crt_h() / 3.9))
         self.screen.blit(hidden_image, position)
 

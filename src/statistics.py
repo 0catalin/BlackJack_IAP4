@@ -20,12 +20,12 @@ class Statistics():
     # generates a key
     def generate_key(self):
         key = Fernet.generate_key()
-        with open("secret.key", "wb") as key_file:
+        with open("../secret.key", "wb") as key_file:
             self.key_file.write(key)
 
     # loads key from the .key file
     def load_key(self):
-        return open("secret.key", "rb").read()
+        return open("../secret.key", "rb").read()
 
     # resets statistics
     def reset_statistics(self):
@@ -58,14 +58,14 @@ class Statistics():
 # joins all data from instance, encrypts it and writes into file
     def encryptMessageAndInsertIntoFile(self):
         msg = "/".join([str(self.total_games), str(self.total_wins), str(self.total_losses), str(self.total_blackjacks), str(self.profit)])
-        with open('database.txt', 'wb') as file:
+        with open('../database.txt', 'wb') as file:
             file.write(self.encrypt_message(msg))
 
 
 # takes file data and decrypts it and returns it, if an error occurs the statistics are reset and the message is encrypted
     def decryptMessageAndReturnIt(self):
         try:
-            with open('database.txt', 'rb') as file:
+            with open('../database.txt', 'rb') as file:
                 encrypted_data = file.read()
             return self.decrypt_message(encrypted_data)
         except FileNotFoundError:

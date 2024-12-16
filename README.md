@@ -14,9 +14,12 @@ and more:
 
 ## Build details and instructions
 
-The main modules that were used are **pygame** and **cryptography** (eventual
-ceva detalieri aici). To start the game, simply run the `game.py` file in a 
-***Windows*** system.
+The main modules that were used are **pygame** and **cryptography**. To start the game, simply run:
+```
+pip install -r requirements.txt
+python3 game.py
+```
+***Important!*** Run this command on a **Windows** system. Also be sure to have all required modules installed.
 
 ## Contribution
 
@@ -27,6 +30,14 @@ Source files:
 - gameplay.py: contains all the states of the game (rounds, betting state, game over screen)
 - utils.py: some auxiliary functions used in the implementation
 - game_logic.py: classes for cards, deck and players (hands)
+
+Difficulties:
+
+- failure to implement **Split** functionality during gameplay (too complex)
+- properly spacing out objects and positioning text
+- implementing return logic for the gameplay loops (to avoid stack overflow)
+- treating all Blackjack outcomes correctly
+
 
 ### Oprea Andrei Catalin - 324CD
 
@@ -42,6 +53,9 @@ Difficulties:
 - understanding while loops and how to place the elements on the screen
 - the cryptographic encoding and decoding for the statistics
 - searching for the right sound effects (and timing the sounds to the backend commands), backgrounds and overall design
+
+[GitHub Repo Link](https://github.com/0catalin/BlackJack_IAP4)
+
 
 
 

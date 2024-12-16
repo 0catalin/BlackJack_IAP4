@@ -213,10 +213,10 @@ def play():
                  5)
 
         # places the input text on the screen in the input boxes
-        input_text_surface = get_font(int(current_width / 60)).render(input_text1, True, (0, 0, 0))
+        input_text_surface = get_font(int(current_width / 60)).render(input_text1, True, (255, 255, 255))
         SCREEN.blit(input_text_surface, (input_box1.x + 5, input_box1.y + 15))
         
-        input_text_surface = get_font(int(current_width / 60)).render(input_text2, True, (0, 0, 0))
+        input_text_surface = get_font(int(current_width / 60)).render(input_text2, True, (255, 255, 255))
         SCREEN.blit(input_text_surface, (input_box2.x + 5, input_box2.y + 15))
 
 

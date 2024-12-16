@@ -9,18 +9,20 @@ class Card:
         self.rank = rank
         self.value = value
         self.image_path = "assets/card_assets/" + self.rank + "_of_" + self.suit
+        # This is done to get the right images for jacks, queens and kings
+        # (The versions with 2 at the end look nicer)
         if self.rank in ['jack', 'queen', 'king']:
             self.image_path = self.image_path + '2'
         self.image_path = self.image_path + ".png"
 
+    # Load card face-up
     def load_card_image(self):
         return pygame.image.load(self.image_path)
 
+    # Load card face-down
     def load_hidden_card(self):
         return pygame.image.load("assets/card_assets/back_of_card.png")
 
-    def __str__(self):
-        return f"{self.rank} of {self.suit}"
 
 
 class Deck:

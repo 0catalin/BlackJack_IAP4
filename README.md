@@ -1,4 +1,5 @@
 # Blackjack in Python - IA4 Project
+[GitHub Repo Link](https://github.com/0catalin/BlackJack_IAP4)
 
 The aim of this project is to implement a functional version of the popular card 
 game `Blackjack` in a manner as close to the real-life version as possible. Although
@@ -19,7 +20,7 @@ The main modules that were used are **pygame** and **cryptography**. To start th
 pip install -r requirements.txt
 python3 game.py
 ```
-***Important!*** Run this command on a **Windows** system. Also be sure to have all required modules installed.
+***Important!*** Do not run this command on **WSL**! Also be sure to have all required modules installed.
 
 ## Contribution
 
@@ -54,8 +55,10 @@ Difficulties:
 - the cryptographic encoding and decoding for the statistics
 - searching for the right sound effects (and timing the sounds to the backend commands), backgrounds and overall design
 
-[GitHub Repo Link](https://github.com/0catalin/BlackJack_IAP4)
 
+## Credits
+- Sounds provided by [Pixabay](https://pixabay.com)
+- Playing card png's provided by [Google Code archive](https://code.google.com/archive/p/vector-playing-cards/wikis)
 
 
 

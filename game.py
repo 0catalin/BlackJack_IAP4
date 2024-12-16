@@ -112,8 +112,18 @@ def main():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     play()
+                    button_click_sound.play()
+                    time.sleep(0.3)
+                    button_click_sound.stop()
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.load("sounds/background.mp3")
+                    pygame.mixer.music.play(loops=-1)
+
                 if STATISTICS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     statistics()
+                    button_click_sound.play()
+                    time.sleep(0.3)
+                    button_click_sound.stop()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     quit_sound.play()
                     time.sleep(0.7)
@@ -236,6 +246,7 @@ def play():
                 (good_input2, error_message_2) = custom_validation2(input_text2)
                 if good_input1 and good_input2:
                     gameplay(int(input_text1), int(input_text2))
+                    return
                 if not good_input1:
                     input_text1 = ""
                 if not good_input2:
@@ -261,7 +272,7 @@ def play():
 
             # if escape is pressed it goes back to main
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                main()
+                return
 
             # if first box is clicked change status to change color at the beginning of loop
             elif event.type == pygame.MOUSEBUTTONDOWN and input_box1.collidepoint(PLAY_MOUSE_POS):
@@ -278,7 +289,7 @@ def play():
             # if back button is clicked go back to main loop
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if BACK_BUTTON.checkForInput(PLAY_MOUSE_POS):
-                    main()
+                    return
             
         # update screen and set frame rate to 60
         pygame.display.update()
@@ -369,15 +380,16 @@ def statistics():
             # if back is clicked run main loop
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if BACK_BUTTON.checkForInput(PLAY_MOUSE_POS):
-                    main()
+                    return
                 elif STATISTICS_BUTTON.checkForInput(PLAY_MOUSE_POS):
 
                     # if remove statistics is pressed remove file and call statistics function
                     os.remove("database.txt")
                     statistics()
+                    return
             # if esc is pressed run main loop, go back
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                main()
+                return
 
         # update screen and set frame rate to 60
         pygame.display.update()
@@ -400,6 +412,7 @@ def gameplay(deck_number, initial_balance):
     # create gameplay instance and run the loop function
     gameplay = Gameplay(SCREEN, table_bg, deck_number, initial_balance)
     gameplay.loop()
+    
 
 
 

@@ -28,8 +28,20 @@ Source files:
 - utils.py: some auxiliary functions used in the implementation
 - game_logic.py: classes for cards, deck and players (hands)
 
-### Oprea-Andrei Catalin - 324CD
+### Oprea Andrei Catalin - 324CD
 
+Implemented the main menu section, the personalized input and the statistics Class with its methods.
+Source files:
+- game.py: contains the main menu of the game
+- button.py: contains the Button class with its logic and methods
+- statistics.py : the methods for storing statistics cryptographically and the cases where something wrong happens
+
+Difficulties:
+
+- the adjustment of the screen's size while keeping the same proportions
+- understanding while loops and how to place the elements on the screen
+- the cryptographic encoding and decoding for the statistics
+- searching for the right sound effects (and timing the sounds to the backend commands), backgrounds and overall design
 
 
 
